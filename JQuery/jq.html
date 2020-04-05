@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+  <title>JQuery</title>
+  <link rel="stylesheet" type="text/css" href="var2.css">
+  <link rel="canonical" href="https://…"/> 
+
+  <!--Подключение JQuery-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <style>
+    #undo {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+</style>
+</head>
+
+
+<body>
+    <h1>Работа c JQuery</h1>
+
+    <h2>Задания с текстом и ссылками</h2>
+
+    <p>Текст без класса</p>
+    <p class="first">Текст 1 с классом First</p>
+    <p class="first">Текст 2 с классом First</p>
+    <a href="http://google.com" class="newClass">ССылка 1 с классом</a><br></br>
+    <a href="http://yandex.ru">ССылка без класса</a><br></br>
+    <a href="http://liveresult.ru"  class="newClass">ССылка 2 с классом</a><br></br>
+    <input type="button" value="Обновить страницу" class="F5"><br></br>
+
+
+<script>
+    $(document).ready(function(){
+
+// изменить стили оформления ссылок и параграфов с определенным классом на собственный
+
+        $("p").css("color", "red");
+        $(".first").css("fontSize", "30px");
+        $(".newClass").css("text-decoration", "none");
+        $(".newClass").css("font-family", "cursive");
+
+// написать функцию установки всех элементов формы в disabled и применить ее при загрузке страницы ко всем элементам формы
+
+    $(document).ready(function() { 
+        $("form :enabled").attr("disabled", "true");
+    });
+
+// п.1 Для всех ссылок перед текстом с помощью jQuery добавить emoji ↑ 
+
+        $("a").prepend("↑");
+    
+// п.2 Изменить атрибут так чтобы все все ссылки на странице открывались в новом окне
+
+        $("a").attr("target", "_blank");
+
+// Изменить все ссылки http на https с помощью jQuery
+
+$("a").each(function () {
+        $(this).attr("href", function (index, value) {
+            let protocol = value.substring(0, value.indexOf(':'));
+            if (protocol === 'http') {
+                let href = value.substring(value.indexOf(':'), value.length);
+                return protocol + 's' + href;
+            }
+        });
+    });
+
+//Добавить фиксированную кнопку (верхний правый угол) на странице по нажатию на которую п.1 и п.2 этого задания отменяются
+
+$('body').append('<button id = "undo">Отменить изменения</button>');
+    $("#undo").click(function () {
+
+        $("a").each(function () {
+            $(this).text(function (index, text) {
+                if (text.substr(0, 1) === '↑') {
+                    return text.substring(1, text.length);
+                }
+            });
+        });
+
+        $("form :disabled").prop("disabled", false);
+    });
+
+//При нажатии на кнопку производить анимацию/эффект с элементом той же строки в первой колонке
+
+    //fadeTO
+
+        $(".but2").click(
+            function () {
+                $(".fadeto").fadeTo("fast", "0.5", "linear");
+            }
+        )
+
+    //slideToggle
+
+        $(".but3").click(
+            function () {
+                $(".toggle").slideToggle("slow", "linear");
+            }
+        )
+    
+    //fadeOut
+
+        $(".but4").click(
+            function () {
+                $(".fadeout").fadeOut("slow", "swing");
+            }
+        )
+    
+    //fadeIn
+
+        $(".fadein").fadeOut("fast", "swing");
+        $(".but5").click(
+            function () {
+                $(".fadein").fadeIn("slow", "swing");
+            }
+        )
+    
+    //slideUp
+
+        $(".but6").click(
+            function () {
+                $(".slideup").slideUp("slow", "swing");
+            }
+        )
+
+//получите содержимое с помощью аджакса, обновив один из элементов страницы динамически. 
+
+
+        $("#F5").click(
+            function () {
+                $("#forajax").load("https://inxaoc.github.io/example/ajax-1.html", "", "");
+            }
+        )
+    })
+//
+
+
+        $.ajax({
+            url: "https://inxaoc.github.io/example/ajax.json"
+        }).done((e) => {
+            let req = Object.assign({}, e);
+            console.log(req);
+            $("body").append(createList(req));
+        });
+
+        function createList(element) {
+            let ul = document.createElement('ul');
+            for (const props in element) {
+                let li = document.createElement('li');
+                if (typeof (element[props]) !== 'object') {
+                    li.innerText = element[props];
+                } else {
+                    li.innerText = props;
+                    // добавляет вложенный список в li
+                    li.append(createList(element[props]));
+                }
+                ul.append(li);
+            }
+            return ul;
+        }
+
+</script>
+
+<h3>Форма, элементы которой надо задизейблить</h3>
+
+<form>
+    <input type="button" value="Кнопка 1"></input>
+    <input type="time" value="10:05"></input>
+    <input type="button" value="Кнопка 2"></input>
+</form>
+
+<h2>Задания с таблицей (эффекты и анимация)</h2>
+
+<!--Создайте таблицу с колонками «текст» и «эффект/анимация»-->
+
+<table id='dataTable' border="1">
+    <tr>
+        <td><b>Текст</b></td>
+        <td><b>Эффект/анимация</b></td>
+    </tr>
+    <tr>
+        <td class="fadeto">Постепенно скрывается/отображается до указанного уровня прозрачности</td>
+        <td><input type="button" value="Применить fadeTo" class="but2"></td>
+    </tr>
+    <tr>
+        <td class="toggle">Высота изменится до 0, потом станет исходной</td>
+        <td><input type="button" value="Применить slideToggle" class="but3"></td>
+    </tr>
+    <tr>
+        <td class="fadeout">Элемент постепенно скрывается с указанной скоростью</td>
+        <td><input type="button" value="Применить fadeOut" class="but4"></td>
+    </tr>
+    <tr>
+        <td class="fadein">Элемент постепенно появляется с указанной скоростью</td>
+        <td><input type="button" value="Применить fadeIn" class="but5"></td>
+    </tr>
+    <tr>
+        <td class="slideup">Высота элемента изменится до 0</td>
+        <td><input type="button" value="Применить slideUp" class="but6"></td>
+    </tr>
+</table>
+
+<h2>Задания с ajax</h2>
+
+<input type="button" value="Обновить страницу" id="F5"><br></br>
+<p id="forajax">Элемент для применения Ajax</p>
+
+</body>
+</html>
